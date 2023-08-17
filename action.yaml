@@ -1,0 +1,44 @@
+name: 'Create SOCI INDEX'
+author: IAMOPS
+description: 'Create SOCI INDEX of ECR Docker image and Push back to ECR'
+branding:
+  icon: 'Triangle'
+  color: 'black'
+inputs:
+  registry:
+    description: 'In the format of <registry>'
+    required: true
+    default: '123455677889.dkr.ecr.eu-central-1.amazonaws.com'
+  registry_user:
+    description: 'In the format of <registry_user>'
+    required: false
+    default: 'AWS'
+  registry_password:
+    description: 'In the format of <registry_password>'
+    required: true
+    default: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+  repo_name:
+    description: 'In the format of <repo>'
+    required: true
+    default: 'repository_name'
+  tag_name:
+    description: 'In the format of <tag>'
+    required: true
+    default: 'latest'
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      env:
+        REGISTRY: ${{ inputs.registry }}
+        REGISTRY_USER: ${{ inputs.registry_user }}
+        REGISTRY_PASSWORD: ${{ inputs.registry_password }}
+        REPO_NAME: ${{ inputs.repo_name }}
+        REPOSITORY_TAG: ${{ inputs.tag_name }}
+      run: | 
+        wget --no-verbose https://raw.githubusercontent.com/iamops-team/aws-soci/main/index.sh -O index.sh
+        chmod +x index.sh
+        bash index.sh
+    - if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
+      run: echo "${{ inputs.install-dir }}" >> $GITHUB_PATH
+      shell: bash
