@@ -1,3 +1,4 @@
+# destroy.yml
 name: 'Create SOCI INDEX'
 author: IAMOPS
 description: 'Create SOCI INDEX of ECR Docker image and Push back to ECR'
@@ -7,7 +8,7 @@ branding:
 inputs:
   registry:
     description: 'In the format of <registry>'
-    required: true
+    required: false
     default: '123455677889.dkr.ecr.eu-central-1.amazonaws.com'
   registry_user:
     description: 'In the format of <registry_user>'
@@ -15,15 +16,15 @@ inputs:
     default: 'AWS'
   registry_password:
     description: 'In the format of <registry_password>'
-    required: true
+    required: false
     default: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
   repo_name:
     description: 'In the format of <repo>'
-    required: true
-    default: 'repository_name'
+    required: false
+    default: 'clamav'
   tag_name:
     description: 'In the format of <tag>'
-    required: true
+    required: false
     default: 'latest'
 runs:
   using: "composite"
@@ -36,7 +37,7 @@ runs:
         REPO_NAME: ${{ inputs.repo_name }}
         REPOSITORY_TAG: ${{ inputs.tag_name }}
       run: | 
-        wget --no-verbose https://raw.githubusercontent.com/iamops-team/aws-soci/main/src/entrypoint.sh -O index.sh
+        wget --no-verbose https://raw.githubusercontent.com/MayurDuduka/soci-index-action/main/index.sh -O index.sh
         chmod +x index.sh
         bash index.sh
     - if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
