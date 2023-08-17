@@ -3,6 +3,8 @@
 SOCI_USER="awslabs"
 SOCI_REPO="soci-snapshotter"
 
+REQUIRED_ENV_VARS=("REGISTRY" "REGISTRY_PASSWORD" "REPO_NAME" "REPOSITORY_TAG")
+
 set -e
 
 shopt -s expand_aliases
@@ -13,21 +15,6 @@ else
     alias info_log="echo \"INFO:\""
     alias error_log="echo \"ERROR:\""
 fi
-
-REQUIRED_ENV_VARS=("SOCI_USER" "SOCI_REPO" "REGISTRY" "REGISTRY_PASSWORD" "REPO_NAME" "REPOSITORY_TAG")
-
-check_empty() {
-    if [ -z "${!1}" ]; then
-        error_log "Error: $1 is empty. Exiting."
-        exit 1
-    fi
-}
-
-for var in "${REQUIRED_ENV_VARS[@]}"; do
-    check_empty "$var"
-done
-
-info_log "All required environment variables are set."
 
 RESPONSE=$(curl -s "https://api.github.com/repos/${SOCI_USER}/${SOCI_REPO}/releases/latest")
 
@@ -73,11 +60,24 @@ fi
 
 rm index.sh THIRD_PARTY_LICENSES NOTICE.md ${SOCI_REPO}-grpc
 
-info_log "Pulling Docker image using CTR"
-sudo ctr i pull --user $REGISTRY_USER:$REGISTRY_PASSWORD $REGISTRY/$REPO_NAME:$REPOSITORY_TAG
+check_empty() {
+    if [ -z "${!1}" ]; then
+        info_log "Info: $1 is empty. Exiting."
+        break
+    else
+        info_log "All required environment variables are set."
 
-info_log "Creating SOCI index for Docker image using SOCI"
-sudo soci create $REGISTRY/$REPO_NAME:$REPOSITORY_TAG
+        info_log "Pulling Docker image using CTR"
+        sudo ctr i pull --user $REGISTRY_USER:$REGISTRY_PASSWORD $REGISTRY/$REPO_NAME:$REPOSITORY_TAG
 
-info_log "Pushing SOCI Docker image using SOCI"
-sudo soci push --user $REGISTRY_USER:$REGISTRY_PASSWORD $REGISTRY/$REPO_NAME:$REPOSITORY_TAG
+        info_log "Creating SOCI index for Docker image using SOCI"
+        sudo soci create $REGISTRY/$REPO_NAME:$REPOSITORY_TAG
+
+        info_log "Pushing SOCI Docker image using SOCI"
+        sudo soci push --user $REGISTRY_USER:$REGISTRY_PASSWORD $REGISTRY/$REPO_NAME:$REPOSITORY_TAG
+    fi
+}
+
+for var in "${REQUIRED_ENV_VARS[@]}"; do
+    check_empty "$var"
+done
