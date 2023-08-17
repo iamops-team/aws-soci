@@ -9,23 +9,23 @@ inputs:
   registry:
     description: 'In the format of <registry>'
     required: false
-    default: '123455677889.dkr.ecr.eu-central-1.amazonaws.com'
+    default: ''    # example: 123455677889.dkr.ecr.eu-central-1.amazonaws.com
   registry_user:
     description: 'In the format of <registry_user>'
     required: false
-    default: 'AWS'
+    default: ''    # example: AWS
   registry_password:
     description: 'In the format of <registry_password>'
     required: false
-    default: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    default: ''    # example: XXXXXXXXXXXXXXXXXXXX
   repo_name:
     description: 'In the format of <repo>'
     required: false
-    default: 'clamav'
+    default: ''  # example: latest
   tag_name:
     description: 'In the format of <tag>'
     required: false
-    default: 'latest'
+    default: ''    # example: latest
 runs:
   using: "composite"
   steps:
