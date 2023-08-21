@@ -3,8 +3,26 @@ AWS Fargate Enables Faster Container Startup using Seekable OCI.
 
 This Action installs the SOCI binary during a GitHub Actions run.
 
+## What is AWS Fargate?
+- AWS Fargate is a technology that you can use with Amazon ECS to run containers without having to manage servers or clusters of Amazon EC2 instances. With Fargate, you no longer have to provision, configure, or scale clusters of virtual machines to run containers.
+  - [AWS Fargate](https://aws.amazon.com/fargate/)
+  
+## What is AWS SOCI?
+- Seekable OCI (SOCI) is a technology open-sourced by AWS that enables containers to launch faster by lazily loading the container image. SOCI works by creating an index (SOCI Index) of the files within an existing container image.
+- This index is a key enabler to launching containers faster, providing the capability to extract an individual file from a container image before downloading the entire archive.
+  - [Seekable OCI (SOCI)](https://aws.amazon.com/about-aws/whats-new/2022/09/introducing-seekable-oci-lazy-loading-container-images/)
+
+- ### Here's why you should consider using SOCI:
+  - `Faster Container Launches`
+  - `Optimized Resource Usage`
+  - `No Image Conversion or Digest Changes`
+  - `Open Source and Community Collaboration`
+  - `Easy Integration with Existing Tools`
+  - `Minimized Changes to Workflow`
+  - `Performance Improvement`
+
 ## Usage
-**Note:** Supported only on linux based Runners 
+**Note:** Supported only on Linux-based Runners.
 
 Add the following entry to your Github workflow YAML file:
 
@@ -105,7 +123,7 @@ jobs:
           tag_name: 'TAG_NAME'
 ```
 
-Example of a simple workflow (non ECR):
+Example of a simple workflow (non-ECR):
 
 ```yaml
 name: SOCI-INDEX-DEMO
@@ -124,7 +142,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build, tag, and push the image to Amazon ECR
         id: build-image
         run:
           docker build -t test:v1 .;
@@ -140,7 +158,7 @@ jobs:
       - name: Install aws SOCI
         uses: iamops-team/aws-soci@v1.0
 
-      - name: pull image in containerd
+      - name: pull the image in containerd
         run: |
           sudo ctr i pull --user $REGISTRY_USER:$REGISTRY_PASSWORD $REGISTRY/$REPO_NAME:$REPOSITORY_TAG
 
@@ -155,8 +173,13 @@ The following optional inputs:
 
 | Input | Description | Required |
 | --- | --- | --- |
-| `registry` | Docker conatiner registry url, ex: ECR | no |
+| `registry` | Docker container registry URL, ex: ECR | no |
 | `registry_user` | Docker Container registry username. | no |
 | `registry_password` | Docker Container registry password. | no |
 | `repo_name` | Docker Container repository name. | no |
 | `tag_name` | Docker tag name. | no |
+
+- **References:**
+  - [introducing seekable oci lazy loading container images](https://aws.amazon.com/about-aws/whats-new/2022/09/introducing-seekable-oci-lazy-loading-container-images/)
+  - [aws fargate container startup seekable oci](https://aws.amazon.com/about-aws/whats-new/2023/07/aws-fargate-container-startup-seekable-oci/)
+  - [aws fargate enables faster container startup using seekable oci](https://aws.amazon.com/blogs/aws/aws-fargate-enables-faster-container-startup-using-seekable-oci/)
