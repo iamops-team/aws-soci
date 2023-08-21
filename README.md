@@ -115,9 +115,9 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
-      run: 
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .;
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG;
+        run: 
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .;
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG;
 
       - run: echo "__AWS_REGION__=$(echo "${{ secrets.AWS_REGION }}" | tr '-' '_')" >> $GITHUB_ENV
 
