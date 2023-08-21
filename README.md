@@ -110,6 +110,14 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+      - name: Build, tag, and push the image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+      run: 
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .;
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG;
 
       - run: echo "__AWS_REGION__=$(echo "${{ secrets.AWS_REGION }}" | tr '-' '_')" >> $GITHUB_ENV
 
@@ -119,8 +127,8 @@ jobs:
           registry: ${{ steps.login-ecr.outputs.registry }}
           registry_user: ${{ steps.login-ecr.outputs[format('docker_username_{0}_dkr_ecr_{1}_amazonaws_com', steps.login-aws.outputs.aws-account-id, env.__AWS_REGION__)] }}
           registry_password: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_{1}_amazonaws_com', steps.login-aws.outputs.aws-account-id, env.__AWS_REGION__)] }}
-          repo_name: 'ECR_Repository_NAME'
-          tag_name: 'TAG_NAME'
+          repo_name: $ECR_REPOSITORY
+          tag_name: ${{ github.sha }}
 ```
 
 Example of a simple workflow (non-ECR):
