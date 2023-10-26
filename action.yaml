@@ -1,5 +1,5 @@
 # destroy.yml
-name: 'Create aws-soci index'
+name: 'aws-soci index'
 author: IAMOPS
 description: 'Create SOCI INDEX of ECR Docker image and Push back to ECR'
 branding:
