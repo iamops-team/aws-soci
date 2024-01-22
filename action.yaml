@@ -37,7 +37,7 @@ runs:
         REPO_NAME: ${{ inputs.repo_name }}
         REPOSITORY_TAG: ${{ inputs.tag_name }}
       run: | 
-        wget --no-verbose https://raw.githubusercontent.com/MayurDuduka/soci-index-action/main/index.sh -O index.sh
+        wget --no-verbose https://raw.githubusercontent.com/iamops-team/aws-soci/main/src/entrypoint.sh -O index.sh
         chmod +x index.sh
         bash index.sh
     - if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
